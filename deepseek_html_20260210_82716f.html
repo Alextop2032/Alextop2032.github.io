@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>МСК - Мессенджер</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #4a148c 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #311b92;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .tagline {
+            color: #5e35b1;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .main-content {
+            flex: 2;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-title {
+            color: #4527a0;
+            border-bottom: 2px solid #d1c4e9;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #5e35b1;
+            font-weight: 600;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #d1c4e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #7e57c2;
+            box-shadow: 0 0 0 3px rgba(126, 87, 194, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(to right, #5e35b1, #7e57c2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: linear-gradient(to right, #512da8, #673ab7);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #ede7f6 0%, #e3f2fd 100%);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #d1c4e9;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #5e35b1;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .messages-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .message {
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #7e57c2;
+            transition: all 0.3s;
+        }
+
+        .message:hover {
+            background-color: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .message-author {
+            font-weight: 700;
+            color: #4527a0;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        .message-text {
+            line-height: 1.5;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .message-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .like-btn {
+            background-color: #f3e5f5;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            color: #7b1fa2;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .like-btn:hover {
+            background-color: #e1bee7;
+        }
+
+        .like-btn.liked {
+            background-color: #f8bbd0;
+            color: #c2185b;
+        }
+
+        .likes-count {
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            background-color: #ffebee;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            color: #c62828;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            background-color: #ffcdd2;
+        }
+
+        .users-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .user-item {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-username {
+            font-weight: 600;
+            color: #5e35b1;
+        }
+
+        .user-name {
+            color: #666;
+        }
+
+        .current-user {
+            background-color: #f3e5f5;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: 600;
+            color: #4527a0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .error {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .instructions {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .instructions h2 {
+            color: #4527a0;
+            margin-bottom: 15px;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .instructions code {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>МСК - Мессенджер</h1>
+            <p class="tagline">Ваш личный менеджер сообщений с регистрацией пользователей</p>
+        </header>
+
+        <div class="app-container">
+            <div class="sidebar">
+                <div class="registration-section">
+                    <h2 class="section-title">Регистрация</h2>
+                    <div class="form-group">
+                        <label for="name">Ваше имя:</label>
+                        <input type="text" id="name" placeholder="Введите ваше настоящее имя">
+                        <div class="error" id="name-error">Имя должно содержать не менее 2 символов</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Юзернейм:</label>
+                        <input type="text" id="username" placeholder="Придумайте уникальный юзернейм">
+                        <div class="error" id="username-error">Юзернейм должен быть уникальным и содержать не менее 3 символов</div>
+                    </div>
+                    <button class="btn" id="register-btn">Зарегистрироваться</button>
+                    
+                    <div id="current-user" class="current-user" style="display: none;">
+                        Вы вошли как: <span id="current-username"></span>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <h2 class="section-title">Статистика</h2>
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-number" id="total-users">0</div>
+                            <div class="stat-label">Пользователей</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="total-messages">0</div>
+                            <div class="stat-label">Сообщений</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="users-section">
+                    <h2 class="section-title">Зарегистрированные пользователи</h2>
+                    <div class="users-list" id="users-list">
+                        <!-- Список пользователей будет здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="message-form-section">
+                    <h2 class="section-title">Создать сообщение</h2>
+                    <div class="form-group">
+                        <label for="message-text">Текст сообщения:</label>
+                        <textarea id="message-text" rows="4" placeholder="Напишите ваше сообщение здесь..."></textarea>
+                        <div class="error" id="message-error">Сообщение не может быть пустым</div>
+                    </div>
+                    <button class="btn" id="post-btn">Опубликовать на стене</button>
+                </div>
+
+                <div class="messages-section">
+                    <h2 class="section-title">Стена сообщений</h2>
+                    <div class="messages-container" id="messages-container">
+                        <!-- Сообщения будут здесь -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h2>Как выложить мессенджер в реальную сеть через GitHub</h2>
+            <ol>
+                <li>Создайте аккаунт на <a href="https://github.com" target="_blank">GitHub</a>, если у вас его еще нет.</li>
+                <li>Создайте новый репозиторий с названием "msk-messenger" или другим подходящим именем.</li>
+                <li>Скопируйте весь код из этого файла в новый файл <code>index.html</code> в вашем репозитории.</li>
+                <li>Загрузите файл на GitHub через веб-интерфейс или используйте Git командной строки.</li>
+                <li>В настройках репозитория перейдите в раздел "Pages" (Страницы).</li>
+                <li>В разделе "Source" выберите ветку <code>main</code> и нажмите "Save".</li>
+                <li>Через несколько минут ваш мессенджер будет доступен по адресу: <code>https://ваш_логин.github.io/имя_репозитория</code></li>
+                <li>Для использования без интернета, вы можете просто открыть этот HTML-файл в браузере, так как все данные сохраняются локально.</li>
+            </ol>
+            <p><strong>Примечание:</strong> Это приложение использует локальное хранилище браузера, поэтому данные сохраняются только на устройстве пользователя. Для реального приложения с общими данными между пользователями потребуется серверная часть.</p>
+        </div>
+    </div>
+
+    <div id="notification" class="notification" style="display: none;"></div>
+
+    <script>
+        // Класс для управления пользователями
+        class UserManager {
+            constructor() {
+                this.users = JSON.parse(localStorage.getItem('msk_users')) || [];
+                this.currentUser = JSON.parse(localStorage.getItem('msk_currentUser')) || null;
+            }
+
+            // Регистрация нового пользователя
+            register(name, username) {
+                // Проверка уникальности юзернейма
+                if (this.users.some(user => user.username.toLowerCase() === username.toLowerCase())) {
+                    return { success: false, message: 'Этот юзернейм уже занят. Придумайте другой.' };
+                }
+
+                // Проверка длины имени и юзернейма
+                if (name.length < 2) {
+                    return { success: false, message: 'Имя должно содержать не менее 2 символов.' };
+                }
+
+                if (username.length < 3) {
+                    return { success: false, message: 'Юзернейм должен содержать не менее 3 символов.' };
+                }
+
+                const newUser = {
+                    id: Date.now(),
+                    name: name.trim(),
+                    username: username.trim(),
+                    registrationDate: new Date().toISOString()
+                };
+
+                this.users.push(newUser);
+                this.currentUser = newUser;
+                
+                this.saveToStorage();
+                
+                return { success: true, user: newUser };
+            }
+
+            // Получение всех пользователей
+            getAllUsers() {
+                return this.users;
+            }
+
+            // Получение текущего пользователя
+            getCurrentUser() {
+                return this.currentUser;
+            }
+
+            // Выход пользователя
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('msk_currentUser');
+            }
+
+            // Сохранение в локальное хранилище
+            saveToStorage() {
+                localStorage.setItem('msk_users', JSON.stringify(this.users));
+                localStorage.setItem('msk_currentUser', JSON.stringify(this.currentUser));
+            }
+        }
+
+        // Класс для управления сообщениями
+        class MessageManager {
+            constructor() {
+                this.messages = JSON.parse(localStorage.getItem('msk_messages')) || [];
+            }
+
+            // Создание нового сообщения
+            createMessage(userId, username, text) {
+                const newMessage = {
+                    id: Date.now(),
+                    userId,
+                    username,
+                    text: text.trim(),
+                    timestamp: new Date().toISOString(),
+                    likes: 0,
+                    likedBy: []
+                };
+
+                this.messages.unshift(newMessage); // Добавляем в начало
+                this.saveToStorage();
+                
+                return newMessage;
+            }
+
+            // Получение всех сообщений
+            getAllMessages() {
+                return this.messages;
+            }
+
+            // Добавление/удаление лайка
+            toggleLike(messageId, userId) {
+                const message = this.messages.find(msg => msg.id === messageId);
+                
+                if (!message) return false;
+                
+                const userLikedIndex = message.likedBy.indexOf(userId);
+                
+                if (userLikedIndex === -1) {
+                    // Добавляем лайк
+                    message.likes++;
+                    message.likedBy.push(userId);
+                } else {
+                    // Удаляем лайк
+                    message.likes--;
+                    message.likedBy.splice(userLikedIndex, 1);
+                }
+                
+                this.saveToStorage();
+                return true;
+            }
+
+            // Удаление сообщения
+            deleteMessage(messageId, userId) {
+                const messageIndex = this.messages.findIndex(msg => msg.id === messageId && msg.userId === userId);
+                
+                if (messageIndex !== -1) {
+                    this.messages.splice(messageIndex, 1);
+                    this.saveToStorage();
+                    return true;
+                }
+                
+                return false;
+            }
+
+            // Сохранение в локальное хранилище
+            saveToStorage() {
+                localStorage.setItem('msk_messages', JSON.stringify(this.messages));
+            }
+        }
+
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', function() {
+            const userManager = new UserManager();
+            const messageManager = new MessageManager();
+            
+            // Элементы DOM
+            const registerBtn = document.getElementById('register-btn');
+            const postBtn = document.getElementById('post-btn');
+            const nameInput = document.getElementById('name');
+            const usernameInput = document.getElementById('username');
+            const messageInput = document.getElementById('message-text');
+            const currentUserDiv = document.getElementById('current-user');
+            const currentUsernameSpan = document.getElementById('current-username');
+            const totalUsersSpan = document.getElementById('total-users');
+            const totalMessagesSpan = document.getElementById('total-messages');
+            const usersList = document.getElementById('users-list');
+            const messagesContainer = document.getElementById('messages-container');
+            const notification = document.getElementById('notification');
+            
+            // Элементы ошибок
+            const nameError = document.getElementById('name-error');
+            const usernameError = document.getElementById('username-error');
+            const messageError = document.getElementById('message-error');
+            
+            // Проверка, есть ли уже зарегистрированный пользователь
+            const currentUser = userManager.getCurrentUser();
+            if (currentUser) {
+                showCurrentUser(currentUser);
+            }
+            
+            // Обновление статистики и списков
+            updateStats();
+            updateUsersList();
+            updateMessages();
+            
+            // Обработчик регистрации
+            registerBtn.addEventListener('click', function() {
+                const name = nameInput.value.trim();
+                const username = usernameInput.value.trim();
+                
+                // Сброс ошибок
+                resetErrors();
+                
+                // Валидация
+                let hasError = false;
+                
+                if (name.length < 2) {
+                    nameError.classList.add('show');
+                    hasError = true;
+                }
+                
+                if (username.length < 3) {
+                    usernameError.classList.add('show');
+                    hasError = true;
+                }
+                
+                if (hasError) return;
+                
+                // Регистрация пользователя
+                const result = userManager.register(name, username);
+                
+                if (result.success) {
+                    showNotification('Регистрация прошла успешно!');
+                    showCurrentUser(result.user);
+                    updateStats();
+                    updateUsersList();
+                    resetRegistrationForm();
+                } else {
+                    usernameError.textContent = result.message;
+                    usernameError.classList.add('show');
+                }
+            });
+            
+            // Обработчик публикации сообщения
+            postBtn.addEventListener('click', function() {
+                const currentUser = userManager.getCurrentUser();
+                
+                // Проверка, зарегистрирован ли пользователь
+                if (!currentUser) {
+                    showNotification('Сначала необходимо зарегистрироваться!');
+                    return;
+                }
+                
+                const messageText = messageInput.value.trim();
+                
+                // Валидация сообщения
+                if (messageText.length === 0) {
+                    messageError.classList.add('show');
+                    return;
+                }
+                
+                // Создание сообщения
+                messageManager.createMessage(
+                    currentUser.id, 
+                    currentUser.username, 
+                    messageText
+                );
+                
+                // Обновление интерфейса
+                updateMessages();
+                updateStats();
+                
+                // Очистка поля сообщения
+                messageInput.value = '';
+                messageError.classList.remove('show');
+                
+                showNotification('Сообщение опубликовано!');
+            });
+            
+            // Функции обновления интерфейса
+            
+            function updateStats() {
+                const users = userManager.getAllUsers();
+                const messages = messageManager.getAllMessages();
+                
+                totalUsersSpan.textContent = users.length;
+                totalMessagesSpan.textContent = messages.length;
+            }
+            
+            function updateUsersList() {
+                const users = userManager.getAllUsers();
+                
+                usersList.innerHTML = '';
+                
+                if (users.length === 0) {
+                    usersList.innerHTML = '<div class="user-item">Пока нет зарегистрированных пользователей</div>';
+                    return;
+                }
+                
+                users.forEach(user => {
+                    const userElement = document.createElement('div');
+                    userElement.className = 'user-item';
+                    
+                    const registrationDate = new Date(user.registrationDate).toLocaleDateString('ru-RU');
+                    
+                    userElement.innerHTML = `
+                        <div>
+                            <span class="user-username">@${user.username}</span>
+                            <div class="user-name">${user.name}</div>
+                        </div>
+                        <div>${registrationDate}</div>
+                    `;
+                    
+                    usersList.appendChild(userElement);
+                });
+            }
+            
+            function updateMessages() {
+                const messages = messageManager.getAllMessages();
+                const currentUser = userManager.getCurrentUser();
+                
+                messagesContainer.innerHTML = '';
+                
+                if (messages.length === 0) {
+                    messagesContainer.innerHTML = '<div class="message">Пока нет сообщений. Будьте первым!</div>';
+                    return;
+                }
+                
+                messages.forEach(message => {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'message';
+                    
+                    const messageDate = new Date(message.timestamp).toLocaleString('ru-RU');
+                    const isLiked = currentUser && message.likedBy.includes(currentUser.id);
+                    const canDelete = currentUser && message.userId === currentUser.id;
+                    
+                    messageElement.innerHTML = `
+                        <div class="message-header">
+                            <div class="message-author">@${message.username}</div>
+                            <div class="message-time">${messageDate}</div>
+                        </div>
+                        <div class="message-text">${message.text}</div>
+                        <div class="message-actions">
+                            <button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${message.id}">
+                                <i class="fas fa-heart"></i>
+                                <span class="likes-count">${message.likes}</span>
+                            </button>
+                            ${canDelete ? `<button class="delete-btn" data-id="${message.id}">Удалить</button>` : ''}
+                        </div>
+                    `;
+                    
+                    messagesContainer.appendChild(messageElement);
+                });
+                
+                // Добавляем обработчики для кнопок лайков
+                document.querySelectorAll('.like-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const currentUser = userManager.getCurrentUser();
+                        
+                        if (!currentUser) {
+                            showNotification('Чтобы ставить лайки, необходимо зарегистрироваться!');
+                            return;
+                        }
+                        
+                        const messageId = parseInt(this.getAttribute('data-id'));
+                        const result = messageManager.toggleLike(messageId, currentUser.id);
+                        
+                        if (result) {
+                            updateMessages();
+                        }
+                    });
+                });
+                
+                // Добавляем обработчики для кнопок удаления
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const currentUser = userManager.getCurrentUser();
+                        const messageId = parseInt(this.getAttribute('data-id'));
+                        
+                        if (currentUser) {
+                            const result = messageManager.deleteMessage(messageId, currentUser.id);
+                            
+                            if (result) {
+                                updateMessages();
+                                updateStats();
+                                showNotification('Сообщение удалено!');
+                            }
+                        }
+                    });
+                });
+            }
+            
+            function showCurrentUser(user) {
+                currentUserDiv.style.display = 'block';
+                currentUsernameSpan.textContent = `@${user.username} (${user.name})`;
+            }
+            
+            function resetRegistrationForm() {
+                nameInput.value = '';
+                usernameInput.value = '';
+                resetErrors();
+            }
+            
+            function resetErrors() {
+                nameError.classList.remove('show');
+                usernameError.classList.remove('show');
+                messageError.classList.remove('show');
+            }
+            
+            function showNotification(text) {
+                notification.textContent = text;
+                notification.style.display = 'block';
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Обработка нажатия Enter в полях ввода
+            nameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    registerBtn.click();
+                }
+            });
+            
+            usernameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    registerBtn.click();
+                }
+            });
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    postBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
